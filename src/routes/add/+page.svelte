@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 
 	const stations = [
@@ -83,7 +83,9 @@
 		'บางแค',
 		'หลักสอง'
 	];
-
+	function formatNumberWithLeadingZero(num: number): string {
+  return num < 10 ? `0${num}` : num.toString();
+}
 	/**
 	 * @type {string | null}
 	 */
@@ -95,12 +97,16 @@
 	let State = 1;
 	let THTerminalStation = '';
 	let ENTerminalStation = '';
+	let BLindex = '1';
+	let BLTerminalindex = '1';
 	async function fetchData() {
 		const response = await fetch('/api/add');
 		if (response.ok) {
 			const json = await response.json();
 			const stationIndex = json.body.Station; // Assuming this is a zero-based index
+				BLindex = formatNumberWithLeadingZero(stationIndex + 1)
 			const TerminalStation = json.body.TerminalStation;
+				BLTerminalindex =  formatNumberWithLeadingZero(TerminalStation + 1)
 			if (stationIndex >= 0 && stationIndex < stations.length) {
 				selectedStation = stations[stationIndex];
 				thaiSelectedStation = thaiStationName[stationIndex];
@@ -148,7 +154,7 @@
 				  <h2 class="animated fadeInDown delay-1s">DarkRed Line</h2></li1>
 				<li2 class=" animated  fadeInDown delay-0.75s">
 					<h3  class=" animated fadeInDown delay-1s">สถานีต่อไป | Next Station</h3> 
-					<li0> <div class="ripple animated fadeInUp delay-1s">RN02</div> </li0>
+					<li0> <div class="ripple animated fadeInUp delay-1s">BL{BLindex}</div> </li0>
 				  <h1 class="animated fadeInUp delay-1s">{thaiSelectedStation}</h1>
 				  <h2 class="animated  fadeInUp delay-1s">{selectedStation}</h2>
 				 </li2>
@@ -159,7 +165,7 @@
 				</li3>
 				<li4 class=" animated fadeInDown delay-0.75s">
 				  <h1 class="animated fadeInDown delay-1s">ปลายทาง | Destination</h1>
-				  <li1> <div class="rippleter animated fadeInUp delay-1s">RN10</div> </li1>
+				  <li1> <div class="rippleter animated fadeInUp delay-1s">BL{BLTerminalindex}</div> </li1>
 				  <h2 class="animated  fadeInUp delay-1s">{THTerminalStation}</h2>
 				  <h3 class="animated  fadeInUp delay-1s">{ENTerminalStation}</h3>
 				  </li4>
@@ -238,13 +244,13 @@
 		</head>
 		
 		<body id="test">
-			<ul class="wow animated fadeInDown" data-wow-delay="0.2s">
+			<ul class="animated fadeInDown">
 				<li1><img class="animated fadeInLeft delay-1s" src="RAILWAYLOGO2019.png"><h1 class="animated fadeInDown delay-1s">สายสีเเดงเข้ม</h1> 
 				  <h2 class="animated fadeInDown delay-1s">DarkRed Line</h2></li1>
 				<li2 class=" animated fadeInDown delay-0.75s">
-					<h3 class=" animated fadeInDown delay-1s">เชื่อมต่อกับ | Connecting With</h3> 
-					<li0> <img class="animated fadeInDown delay-1s" src="LRLineLA.png">
-						<img class="animated fadeInDown delay-1s" src="BLLineLA.png"></li0>
+					<h1 class=" animated fadeInDown delay-1s">⚠️</h1> 
+					<h2 class="animated fadeInDown delay-1s">โปรดระวังช่องว่างระหว่างตัวรถ</h2>
+				  <h3 class="animated fadeInDown delay-1s">Please mind the gap.</h3>
 				 </li2>
 				<li3 class=" animated zoomIn delay-0.75s">
 					<h1 class="animated fadeInDown delay-1s">ประตูเปิดด้านนี้</h1>
@@ -252,10 +258,10 @@
 					<h3 class="animated pulse delay-1s">▮▮</h3>
 				</li3>
 				<li4 class="animated fadeInDown delay-0.75s">
-				  <h1 class="animated fadeInDown delay-1s"> ปลายทาง | Destination</h1>
-				  <li1> <div class="rippleter animated fadeInDown  delay-1s">RN10</div> </li1>
-				  <h2 class="animated fadeInDown delay-1s">รังสิต</h2>
-				  <h3 class="animated fadeInDown delay-1s">Rangsit</h3>
+				  <h1 class="animated fadeInDown delay-1s">ปลายทาง | Destination</h1>
+				  <li1> <div class="rippleter animated fadeInDown  delay-1s">BL{BLTerminalindex}</div> </li1>
+				  <h2 class="animated fadeInDown delay-1s">{THTerminalStation}</h2>
+				  <h3 class="animated fadeInDown delay-1s">{ENTerminalStation}</h3>
 				  </li4>
 			  </ul>
 		   
@@ -264,7 +270,7 @@
 				  <div class="animated fadeInleft delay-1s texte3">Now stopping at</div>
 			  </div>
 		
-			  <div class="ripple2">RN01</div>
+			  <div class="ripple2">BL{BLindex}</div>
 			  <div class="textt2 animated zoomInUp delay-1s">{thaiSelectedStation}
 			<div class="texte2 animated zoomInUp delay-1s">{selectedStation}</div>
 			  </div>
@@ -320,7 +326,7 @@
 				</li3>
 				<li4 class="animated fadeInDown delay-0.75s">
 				  <h1 class="animated fadeInDown delay-1s"> ปลายทาง | Destination</h1>
-				  <li1> <div class="rippleter animated fadeInDown  delay-1s">RN10</div> </li1>
+				  <li1> <div class="rippleter animated fadeInDown  delay-1s">BL{BLTerminalindex}</div> </li1>
 				  <h2 class="animated fadeInDown delay-1s">{THTerminalStation}</h2>
 				  <h3 class="animated fadeInDown delay-1s">{ENTerminalStation}</h3>
 				  </li4>
@@ -331,7 +337,7 @@
 				  <div class="animated fadeInleft delay-1s texte3">Now stopping at</div>
 			  </div>
 		
-			  <div class="ripple2">RN01</div>
+			  <div class="ripple2">BL{BLindex}</div>
 			  <div class="textt2 animated zoomInUp delay-1s">{thaiSelectedStation}
 			<div class="texte2 animated zoomInUp delay-1s">{selectedStation}</div>
 			  </div>
