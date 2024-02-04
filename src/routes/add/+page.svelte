@@ -94,27 +94,57 @@
 	 * @type {string | null}
 	 */
 	let thaiSelectedStation = thaiStationName[0];
+	let THpreviousStation = '' ?? 'ท่าพระ'
+	let ENpreviousStation = '' ?? 'Terminal Station'
 	let State = 1;
 	let THTerminalStation = '';
 	let ENTerminalStation = '';
 	let BLindex = '1';
 	let BLTerminalindex = '1';
+	let previousIndex = 1;
 	async function fetchData() {
 		const response = await fetch('/api/add');
 		if (response.ok) {
 			const json = await response.json();
 			const stationIndex = json.body.Station; // Assuming this is a zero-based index
-				BLindex = formatNumberWithLeadingZero(stationIndex + 1)
+				
 			const TerminalStation = json.body.TerminalStation;
-				BLTerminalindex =  formatNumberWithLeadingZero(TerminalStation + 1)
+				
 			if (stationIndex >= 0 && stationIndex < stations.length) {
+				BLindex = formatNumberWithLeadingZero(stationIndex + 1)
+				BLTerminalindex =  formatNumberWithLeadingZero(TerminalStation + 1)
 				selectedStation = stations[stationIndex];
 				thaiSelectedStation = thaiStationName[stationIndex];
 				ENTerminalStation = stations[TerminalStation];
 				THTerminalStation = thaiStationName[TerminalStation];
-			}
-			const DisplayState = json.body.DisplayState;
+				if(TerminalStation > stationIndex){
+					previousIndex = stationIndex - 1
+					THpreviousStation = thaiStationName[previousIndex];
+					ENpreviousStation = stations[previousIndex]}
+				else if(TerminalStation < stationIndex){
+					previousIndex = stationIndex + 1
+					THpreviousStation = thaiStationName[previousIndex + 1];
+					ENpreviousStation = stations[previousIndex]
+				}else if(TerminalStation == stationIndex){
+					THpreviousStation = 'สถานีปลายทาง'
+					ENpreviousStation = 'Terminal Station'
+				}else{
+					THpreviousStation = 'ท่าพระ'
+					ENpreviousStation = 'Tha Phra'
+				}	
+				const DisplayState = json.body.DisplayState;
 			State = DisplayState;
+			}else{ // in case of overflow
+				selectedStation = stations[1];
+				thaiSelectedStation = thaiStationName[1];
+				ENTerminalStation = stations[38];
+				THTerminalStation = thaiStationName[38];
+				THpreviousStation = 'ท่าพระ'
+				ENpreviousStation = 'Tha Phra'
+				BLindex = formatNumberWithLeadingZero(2)
+				BLTerminalindex =  formatNumberWithLeadingZero(38)
+				State = 2;
+			}
 		}
 	}
 
@@ -181,12 +211,12 @@
 				  </div>
 				  <div class="blink"></div>
 		
-			  <div class="ripple1 animated bounceIn">RN01</div>
-			  <div class="textt1">จตุจักร
-				  <div class="texte1">Chatuchak</div>
+			  <div class="ripple1 animated bounceIn">{}</div>
+			  <div class="textt1">{THpreviousStation}
+				  <div class="texte1">{ENpreviousStation}</div>
 			  </div>
 		
-			  <div class="ripple2">RN02</div>
+			  <div class="ripple2">BL{BLindex}</div>
 			  <div class="textt2">{thaiSelectedStation}
 				  <div class="texte2">{selectedStation}</div>
 			  </div>
@@ -245,8 +275,8 @@
 		
 		<body id="test">
 			<ul class="animated fadeInDown">
-				<li1><img class="animated fadeInLeft delay-1s" src="RAILWAYLOGO2019.png"><h1 class="animated fadeInDown delay-1s">สายสีเเดงเข้ม</h1> 
-				  <h2 class="animated fadeInDown delay-1s">DarkRed Line</h2></li1>
+				<li1><img class="animated fadeInLeft delay-1s" src="RAILWAYLOGO2019.png"><h1 class="animated fadeInDown delay-1s">รถไฟฟ้าสายสีน้ำเงิน</h1> 
+				  <h2 class="animated fadeInDown delay-1s">MRT BLUE LINE</h2></li1>
 				<li2 class=" animated fadeInDown delay-0.75s">
 					<h1 class=" animated fadeInDown delay-1s">⚠️</h1> 
 					<h2 class="animated fadeInDown delay-1s">โปรดระวังช่องว่างระหว่างตัวรถ</h2>
